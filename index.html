@@ -85,12 +85,29 @@
   <body>
 
     <div class="container">
-      <div class="text-center mb-5">
-        <!-- Tambahan Logo Webapp -->
-        <img src="https://i.ibb.co.com/kgJGgZf2/Data-Pembayaran-Santri.png" alt="Logo DEDIKASI" width="90" class="mb-3">
-        <h2 class="main-title">DEDIKASI</h2>
-        <p class="sub-title fw-semibold text-secondary" style="font-size: 1.1rem; letter-spacing: 0.5px;">Data Pelunasan Pendidikan & Dekosan Santri PP DFI</p>
+      
+      <!-- AREA HEADER BARU -->
+      <div class="d-flex flex-column flex-md-row justify-content-center align-items-center text-center text-md-start mb-5 gap-3 gap-md-4">
+        <!-- 1. Logo di Samping Kiri -->
+        <img src="https://i.ibb.co.com/kgJGgZf2/Data-Pembayaran-Santri.png" alt="Logo DEDIKASI" width="130" style="filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.15));">
+        <!-- 2. Area Teks Kanan -->
+        <div>
+          <!-- Judul DEDIKASI -->
+          <h1 class="main-title mb-0" style="font-size: 3.2rem; font-weight: 800; letter-spacing: 1px; line-height: 1;">
+            DEDIKASI
+          </h1>
+          <!-- Kepanjangan Judul -->
+          <h5 class="fw-bold mt-2 mb-3" style="color: #1e3a8a; font-size: 1.15rem; letter-spacing: 0.5px;">
+            Data Pelunasan Pendidikan & Dekosan Santri
+          </h5>
+          <!-- Nama Instansi -->
+          <div class="d-inline-flex align-items-center bg-white px-3 py-2 rounded-pill shadow-sm border" style="border-color: #e5e7eb !important;">
+            <i class="fa-solid fa-mosque fs-6 me-2" style="color: #10b981;"></i>
+            <span class="text-secondary fw-semibold" style="font-size: 0.95rem;">Pondok Pesantren Darul Fawaid Ilmiyah</span>
+          </div>
+        </div>
       </div>
+      <!-- AKHIR AREA HEADER BARU -->
       
       <div id="menuUtama" class="row justify-content-center g-4">
         <div class="col-md-5">
@@ -117,7 +134,6 @@
         </div>
       </div>
 
-      <!-- Sisa Struktur HTML Tetap Sama -->
       <div id="formPembayaran" class="card card-custom p-4 mt-4 hidden">
         <div class="d-flex align-items-center mb-4">
           <i class="fa-solid fa-file-invoice-dollar text-primary fa-xl me-2"></i>
@@ -159,19 +175,30 @@
       </div>
 
       <div id="areaRiwayat" class="mt-5">
-        <div class="row align-items-center mb-3">
-          <div class="col-md-8">
+        <!-- KEMBALIKAN FITUR PENCARIAN DI SINI -->
+        <div class="row align-items-center mb-3 g-2">
+          <div class="col-md-4">
             <h5 class="fw-semibold mb-0 text-dark"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i>Riwayat Pembayaran Terbaru</h5>
           </div>
-          <div class="col-md-4 text-md-end">
-            <button class="btn btn-sm btn-outline-secondary" onclick="muatTabelRiwayat()"><i class="fa-solid fa-rotate"></i> Refresh</button>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text bg-white border-end-0 text-muted" style="border-radius: 10px 0 0 10px;">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input type="text" id="kotakCari" class="form-control border-start-0" placeholder="Cari nama, bulan, atau pengurus..." onkeyup="filterTabelRiwayat()" style="border-radius: 0 10px 10px 0; padding: 8px 12px;">
+            </div>
+          </div>
+          <div class="col-md-2 text-md-end">
+            <button class="btn btn-sm btn-outline-secondary border-0" onclick="muatTabelRiwayat()"><i class="fa-solid fa-rotate"></i> Refresh</button>
           </div>
         </div>
+        <!-- AKHIR KEMBALIKAN FITUR PENCARIAN -->
+        
         <div class="table-responsive card card-custom p-2">
           <table class="table table-hover align-middle mb-0" id="tabelDataRiwayat">
             <thead>
               <tr>
-                <th>Tanggal</th><th>Nama Santri</th><th>Jenis</th><th>Bulan</th><th>Nominal</th><th>Status</th><th>Pengurus</th><th>Bukti</th>
+                <th class="ps-3">Tanggal</th><th>Nama Santri</th><th>Jenis</th><th>Bulan</th><th>Nominal</th><th>Status</th><th>Pengurus</th><th class="text-center pe-3">Bukti</th>
               </tr>
             </thead>
             <tbody id="kontainerRiwayat"></tbody>
@@ -206,6 +233,8 @@
 
       function muatTabelRiwayat() {
         var kontainerRiwayat = document.getElementById('kontainerRiwayat');
+        if (document.getElementById('kotakCari')) document.getElementById('kotakCari').value = ''; 
+        
         kontainerRiwayat.innerHTML = '<tr><td colspan="8" class="text-center text-muted my-3"><i class="fa-solid fa-spinner fa-spin me-2"></i>Memuat data...</td></tr>';
         
         fetch(APP_SCRIPT_URL + "?action=getRiwayatPembayaran")
@@ -220,22 +249,51 @@
               var isLunas = row.status.toLowerCase().includes('lunas') && !row.status.toLowerCase().includes('belum');
               var badgeClass = isLunas ? 'badge-lunas' : 'badge-belum';
               
+              // KEMBALIKAN KELAS CSS (nama-santri-cell dll) UNTUK FITUR PENCARIAN
               kontainerRiwayat.innerHTML += `
                 <tr>
-                  <td>${row.tanggal}</td>
-                  <td class="fw-medium">${row.nama}</td>
+                  <td class="ps-3 text-muted" style="font-size:0.85rem;">${row.tanggal}</td>
+                  <td class="fw-medium nama-santri-cell">${row.nama}</td>
                   <td>${row.jenis}</td>
-                  <td>${row.bulan}</td>
-                  <td class="fw-semibold">Rp ${Number(row.nominal).toLocaleString('id-ID')}</td>
+                  <td><span class="text-secondary fw-semibold bulan-cell">${row.bulan}</span></td>
+                  <td class="fw-semibold text-dark">Rp ${Number(row.nominal).toLocaleString('id-ID')}</td>
                   <td><span class="${badgeClass}">${row.status}</span></td>
-                  <td>${row.pj || "-"}</td>
-                  <td><a href="${row.bukti}" target="_blank" class="btn btn-sm btn-primary rounded-pill px-3">Lihat</a></td>
+                  <td><span class="text-muted small pj-cell"><i class="fa-regular fa-user me-1"></i>${row.pj || "-"}</span></td>
+                  <td class="text-center pe-3"><a href="${row.bukti}" target="_blank" class="btn btn-sm btn-primary rounded-pill px-3"><i class="fa-solid fa-eye me-1"></i> Lihat</a></td>
                 </tr>
               `;
             });
           })
           .catch(err => kontainerRiwayat.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Gagal memuat tabel riwayat.</td></tr>');
       }
+
+      // KEMBALIKAN FUNGSI JAVASCRIPT PENCARIAN
+      function filterTabelRiwayat() {
+        var input = document.getElementById("kotakCari").value.toLowerCase();
+        var tabel = document.getElementById("tabelDataRiwayat");
+        var tr = tabel.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+          var tdNama = tr[i].querySelector(".nama-santri-cell");
+          var tdBulan = tr[i].querySelector(".bulan-cell");
+          var tdPj = tr[i].querySelector(".pj-cell");
+          
+          if (tdNama || tdBulan || tdPj) {
+            var teksNama = tdNama ? tdNama.textContent || tdNama.innerText : "";
+            var teksBulan = tdBulan ? tdBulan.textContent || tdBulan.innerText : "";
+            var teksPj = tdPj ? tdPj.textContent || tdPj.innerText : "";
+            
+            if (teksNama.toLowerCase().indexOf(input) > -1 || 
+                teksBulan.toLowerCase().indexOf(input) > -1 ||
+                teksPj.toLowerCase().indexOf(input) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }       
+        }
+      }
+      // AKHIR FUNGSI PENCARIAN
 
       function bukaForm(jenis) {
         document.getElementById('menuUtama').classList.add('hidden');
