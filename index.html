@@ -163,8 +163,13 @@
               <input type="text" class="form-control" id="pj" name="pj" required>
             </div>
           </div>
+          <!-- BARIS BARU UNTUK TANGGAL & BUKTI BAYAR -->
           <div class="row g-3">
-            <div class="col-md-12 mb-4">
+            <div class="col-md-6 mb-4">
+              <label class="form-label"><i class="fa-solid fa-calendar-day me-1"></i> Tanggal Transaksi</label>
+              <input type="date" class="form-control" id="tanggal" name="tanggal" required>
+            </div>
+            <div class="col-md-6 mb-4">
               <label class="form-label">Unggah Bukti Pembayaran</label>
               <input type="file" class="form-control" id="buktiBayar" name="buktiBayar" accept="image/*,application/pdf" required>
             </div>
@@ -364,6 +369,13 @@
         document.getElementById('formPembayaran').classList.remove('hidden');
         document.getElementById('judulForm').innerHTML = 'Form Input ' + jenis;
         document.getElementById('jenisPembayaran').value = jenis;
+        
+        // SET TANGGAL DEFAULT KE HARI INI SAAT FORM DIBUKA
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById('tanggal').value = `${yyyy}-${mm}-${dd}`;
 
         var iconForm = document.getElementById('iconForm');
         var btnSimpan = document.getElementById('btnSimpan');
@@ -419,6 +431,7 @@
               bulan: document.getElementById('bulan').value,
               nominal: nominalBulat, 
               pj: document.getElementById('pj').value, 
+              tanggal: document.getElementById('tanggal').value, // Menangkap input tanggal
               fileData: e.target.result.split(',')[1], 
               fileName: fileInput.name,
               fileMime: fileInput.type
